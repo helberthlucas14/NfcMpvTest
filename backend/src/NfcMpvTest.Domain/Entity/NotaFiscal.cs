@@ -1,6 +1,5 @@
 ﻿using NfcMpvTest.Domain.Enum;
 using NfcMpvTest.Domain.Exceptions;
-using NfcMpvTest.Domain.Validation;
 
 namespace NfcMpvTest.Domain.Entity
 {

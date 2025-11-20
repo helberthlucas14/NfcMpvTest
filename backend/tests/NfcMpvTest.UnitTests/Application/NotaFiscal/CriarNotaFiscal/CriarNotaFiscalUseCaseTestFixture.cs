@@ -73,9 +73,9 @@ namespace NfcMpvTest.UnitTests.Application.NotaFiscal.CriarNotaFiscal
             return itensRequest;
         }
 
-        public CriarNotaFiscalRequest RetornaNotaFiscalRequestValida(int? items = 1)
+        public CriarNotaFiscalCommand RetornaNotaFiscalRequestValida(int? items = 1)
         {
-            return new CriarNotaFiscalRequest(
+            return new CriarNotaFiscalCommand(
                  RetornaEmissorValido(),
                  RetornaDataEmissaoValida(),
                  RetornaItemRequestList(items)
