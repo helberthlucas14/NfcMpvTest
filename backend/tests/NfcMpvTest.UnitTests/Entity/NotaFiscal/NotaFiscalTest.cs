@@ -1,8 +1,6 @@
 ﻿using FluentAssertions;
-using NfcMpvTest.Domain.Entity;
 using NfcMpvTest.Domain.Enum;
 using NfcMpvTest.Domain.Exceptions;
-using Entity = NfcMpvTest.Domain.Entity;
 
 namespace NfcMpvTest.UnitTests.Entity.NotaFiscal
 {
@@ -34,7 +32,6 @@ namespace NfcMpvTest.UnitTests.Entity.NotaFiscal
         [Trait("Domain", "NotaFiscal - Entity")]
         [InlineData(NotaFiscalStatus.Emitida)]
         [InlineData(NotaFiscalStatus.EmProcessamento)]
-        [InlineData(NotaFiscalStatus.Erro)]
         public void Deve_Criar_Nota_Fiscal_ComItens_Corretamente_StatusDaNotaFiscal_Validos(NotaFiscalStatus status)
         {
             var emissor = _fixture.RetornaEmissorValido();
@@ -93,7 +90,6 @@ namespace NfcMpvTest.UnitTests.Entity.NotaFiscal
         [Trait("Domain", "NotaFiscal - Entity")]
         [InlineData(NotaFiscalStatus.Emitida)]
         [InlineData(NotaFiscalStatus.EmProcessamento)]
-        [InlineData(NotaFiscalStatus.Erro)]
         public void Deve_Atualizar_Emissor_Corretamente_ComStatusNotaFiscal_Validos(NotaFiscalStatus status)
         {
             var notaFiscal = new Domain.Entity.NotaFiscal(
@@ -117,7 +113,6 @@ namespace NfcMpvTest.UnitTests.Entity.NotaFiscal
         [Trait("Domain", "NotaFiscal - Entity")]
         [InlineData(NotaFiscalStatus.Emitida)]
         [InlineData(NotaFiscalStatus.EmProcessamento)]
-        [InlineData(NotaFiscalStatus.Erro)]
         public void Deve_Atualizar_DataEmissao_Corretamente_Com_StatusValidos(NotaFiscalStatus status)
         {
             var notaFiscal = new Domain.Entity.NotaFiscal(
@@ -140,7 +135,6 @@ namespace NfcMpvTest.UnitTests.Entity.NotaFiscal
         [Trait("Domain", "NotaFiscal - Entity")]
         [InlineData(NotaFiscalStatus.Emitida)]
         [InlineData(NotaFiscalStatus.EmProcessamento)]
-        [InlineData(NotaFiscalStatus.Erro)]
         public void Deve_Remover_Item_Corretamente_Com_Status_Validos(NotaFiscalStatus status)
         {
             var notaFiscal = new Domain.Entity.NotaFiscal(
@@ -204,7 +198,6 @@ namespace NfcMpvTest.UnitTests.Entity.NotaFiscal
         [Trait("Domain", "NotaFiscal - Entity")]
         [InlineData(NotaFiscalStatus.Emitida)]
         [InlineData(NotaFiscalStatus.EmProcessamento)]
-        [InlineData(NotaFiscalStatus.Erro)]
         public void Deve_Remover_TodosItens_Corretamente_Status_Validos(NotaFiscalStatus status)
         {
             var notaFiscal = new Domain.Entity.NotaFiscal(
@@ -305,6 +298,187 @@ namespace NfcMpvTest.UnitTests.Entity.NotaFiscal
 
         }
 
+        [Theory(DisplayName = nameof(Deve_Autorizar_Nota_Fiscal_Corretamente_ComStatusValidos))]
+        [Trait("Domain", "NotaFiscal - Entity")]
+        [InlineData(NotaFiscalStatus.Emitida, NotaFiscalStatus.Autorizada)]
+        [InlineData(NotaFiscalStatus.EmProcessamento, NotaFiscalStatus.EmProcessamento)]
+        [InlineData(NotaFiscalStatus.Autorizada, NotaFiscalStatus.Autorizada)]
+        public void Deve_Autorizar_Nota_Fiscal_Corretamente_ComStatusValidos(NotaFiscalStatus status, NotaFiscalStatus statusEsperado)
+        {
+            var notaFiscal = new Domain.Entity.NotaFiscal(
+                _fixture.RetornaEmissorValido(),
+                _fixture.RetornaDataEmissaoValida()
+                );
 
+            _fixture.DefinirStatusNotaFiscal(notaFiscal, status);
+
+            notaFiscal.Autorizar();
+            notaFiscal.Status.Should().Be(statusEsperado);
+        }
+
+        [Theory(DisplayName = nameof(Deve_Retornar_Erro_Ao_Autorizar_Nota_Fiscal_ComStatusInvalidos))]
+        [Trait("Domain", "NotaFiscal - Entity")]
+        [InlineData(NotaFiscalStatus.Cancelada)]
+        public void Deve_Retornar_Erro_Ao_Autorizar_Nota_Fiscal_ComStatusInvalidos(NotaFiscalStatus status)
+        {
+            var notaFiscal = new Domain.Entity.NotaFiscal(
+                _fixture.RetornaEmissorValido(),
+                _fixture.RetornaDataEmissaoValida()
+                );
+
+            _fixture.DefinirStatusNotaFiscal(notaFiscal, status);
+
+            Action action = () => notaFiscal.Autorizar();
+
+            action.Should().Throw<EntityValidationException>()
+                           .WithMessage("Nota Fiscal não pode ser autorizada.");
+        }
+
+        [Theory(DisplayName = nameof(Deve_Cancelar_Nota_Fiscal_Corretamente_ComStatusValidos))]
+        [Trait("Domain", "NotaFiscal - Entity")]
+        [InlineData(NotaFiscalStatus.Emitida)]
+        [InlineData(NotaFiscalStatus.Autorizada)]
+        public void Deve_Cancelar_Nota_Fiscal_Corretamente_ComStatusValidos(NotaFiscalStatus status)
+        {
+            var notaFiscal = new Domain.Entity.NotaFiscal(
+                _fixture.RetornaEmissorValido(),
+                _fixture.RetornaDataEmissaoValida()
+                );
+
+            _fixture.DefinirStatusNotaFiscal(notaFiscal, status);
+
+            notaFiscal.Cancelar();
+
+            notaFiscal.Status.Should().Be(NotaFiscalStatus.Cancelada);
+        }
+
+        [Fact(DisplayName = nameof(Deve_Retornar_Erro_Ao_Cancelar_Nota_Fiscal_Rejeitada))]
+        [Trait("Domain", "NotaFiscal - Entity")]
+        public void Deve_Retornar_Erro_Ao_Cancelar_Nota_Fiscal_Rejeitada()
+        {
+            var notaFiscal = new Domain.Entity.NotaFiscal(
+                _fixture.RetornaEmissorValido(),
+                _fixture.RetornaDataEmissaoValida()
+                );
+
+            _fixture.DefinirStatusNotaFiscal(notaFiscal, NotaFiscalStatus.Rejeitada);
+
+            Action action = () => notaFiscal.Cancelar();
+
+            action.Should().Throw<EntityValidationException>()
+                           .WithMessage("Nota Fiscal rejeitada não pode ser autorizada.");
+        }
+
+        [Theory(DisplayName = nameof(Deve_Rejeitar_Nota_Fiscal_Corretamente_ComStatusValidos))]
+        [Trait("Domain", "NotaFiscal - Entity")]
+        [InlineData(NotaFiscalStatus.Emitida)]
+        [InlineData(NotaFiscalStatus.EmProcessamento)]
+        public void Deve_Rejeitar_Nota_Fiscal_Corretamente_ComStatusValidos(NotaFiscalStatus status)
+        {
+            var notaFiscal = new Domain.Entity.NotaFiscal(
+                _fixture.RetornaEmissorValido(),
+                _fixture.RetornaDataEmissaoValida()
+                );
+
+            _fixture.DefinirStatusNotaFiscal(notaFiscal, status);
+
+            notaFiscal.Rejeitar();
+
+            notaFiscal.Status.Should().Be(NotaFiscalStatus.Rejeitada);
+        }
+
+        [Theory(DisplayName = nameof(Deve_Retornar_Erro_Ao_Rejeitar_Nota_Fiscal_ComStatusInvalidos))]
+        [Trait("Domain", "NotaFiscal - Entity")]
+        [InlineData(NotaFiscalStatus.Cancelada)]
+        [InlineData(NotaFiscalStatus.Autorizada)]
+        public void Deve_Retornar_Erro_Ao_Rejeitar_Nota_Fiscal_ComStatusInvalidos(NotaFiscalStatus status)
+        {
+            var notaFiscal = new Domain.Entity.NotaFiscal(
+                _fixture.RetornaEmissorValido(),
+                _fixture.RetornaDataEmissaoValida()
+                );
+
+            _fixture.DefinirStatusNotaFiscal(notaFiscal, status);
+
+            Action action = () => notaFiscal.Rejeitar();
+
+            action.Should().Throw<EntityValidationException>()
+                           .WithMessage("Nota Fiscal não pode ser rejeitada.");
+        }
+
+        [Theory(DisplayName = nameof(Deve_ColocarEmProcessamento_Nota_Fiscal_Corretamento_ComStatusValidos))]
+        [Trait("Domain", "NotaFiscal - Entity")]
+        [InlineData(NotaFiscalStatus.Emitida)]
+        public void Deve_ColocarEmProcessamento_Nota_Fiscal_Corretamento_ComStatusValidos(NotaFiscalStatus status)
+        {
+            var notaFiscal = new Domain.Entity.NotaFiscal(
+                _fixture.RetornaEmissorValido(),
+                _fixture.RetornaDataEmissaoValida()
+                );
+
+            _fixture.DefinirStatusNotaFiscal(notaFiscal, status);
+
+            notaFiscal.ColocarEmProcessamento();
+
+            notaFiscal.Status.Should().Be(NotaFiscalStatus.EmProcessamento);
+        }
+
+        [Theory(DisplayName = nameof(Deve_Retornar_Erro_Ao_Rejeitar_Nota_Fiscal_ComStatusInvalidos))]
+        [Trait("Domain", "NotaFiscal - Entity")]
+        [InlineData(NotaFiscalStatus.Cancelada)]
+        [InlineData(NotaFiscalStatus.Autorizada)]
+        [InlineData(NotaFiscalStatus.Rejeitada)]
+        public void Deve_Retornar_Erro_Ao_ColocarEmProcessamento_Nota_Fiscal_ComStatusInvalidos(NotaFiscalStatus status)
+        {
+            var notaFiscal = new Domain.Entity.NotaFiscal(
+                _fixture.RetornaEmissorValido(),
+                _fixture.RetornaDataEmissaoValida()
+                );
+
+            _fixture.DefinirStatusNotaFiscal(notaFiscal, status);
+
+            Action action = () => notaFiscal.ColocarEmProcessamento();
+
+            action.Should().Throw<EntityValidationException>()
+                           .WithMessage("Nota fiscal não pode ser colocada em processamento.");
+        }
+
+        [Theory(DisplayName = nameof(Deve_ColocarEmProcessamento_Nota_Fiscal_Corretamento_ComStatusValidos))]
+        [Trait("Domain", "NotaFiscal - Entity")]
+        [InlineData(NotaFiscalStatus.EmProcessamento)]
+        public void Deve_DefinirErro_Nota_Fiscal_Corretamento_ComStatusValidos(NotaFiscalStatus status)
+        {
+            var notaFiscal = new Domain.Entity.NotaFiscal(
+                _fixture.RetornaEmissorValido(),
+                _fixture.RetornaDataEmissaoValida()
+                );
+
+            _fixture.DefinirStatusNotaFiscal(notaFiscal, status);
+
+            notaFiscal.DefinirErro();
+
+            notaFiscal.Status.Should().Be(NotaFiscalStatus.Erro);
+        }
+
+        [Theory(DisplayName = nameof(Deve_Retornar_Erro_Ao_Rejeitar_Nota_Fiscal_ComStatusInvalidos))]
+        [Trait("Domain", "NotaFiscal - Entity")]
+        [InlineData(NotaFiscalStatus.Emitida)]
+        [InlineData(NotaFiscalStatus.Cancelada)]
+        [InlineData(NotaFiscalStatus.Autorizada)]
+        [InlineData(NotaFiscalStatus.Rejeitada)]
+        public void Deve_Retornar_Erro_Ao_DefinirErro_Nota_Fiscal_ComStatusInvalidos(NotaFiscalStatus status)
+        {
+            var notaFiscal = new Domain.Entity.NotaFiscal(
+                _fixture.RetornaEmissorValido(),
+                _fixture.RetornaDataEmissaoValida()
+                );
+
+            _fixture.DefinirStatusNotaFiscal(notaFiscal, status);
+
+            Action action = () => notaFiscal.DefinirErro();
+
+            action.Should().Throw<EntityValidationException>()
+                           .WithMessage("Não e possivel Definir Erro apenas para notas ficais em processamento.");
+        }
     }
 }

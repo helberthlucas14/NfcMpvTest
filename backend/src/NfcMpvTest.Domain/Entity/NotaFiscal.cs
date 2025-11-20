@@ -47,8 +47,9 @@ namespace NfcMpvTest.Domain.Entity
 
         public void Autorizar()
         {
-            if (Status == NotaFiscalStatus.Cancelada)
-                throw new EntityValidationException("Nota Fiscal cancelada não pode ser autorizada.");
+            if (Status == NotaFiscalStatus.Cancelada ||
+                Status == NotaFiscalStatus.Erro)
+                throw new EntityValidationException("Nota Fiscal não pode ser autorizada.");
 
             if (Status == NotaFiscalStatus.EmProcessamento || Status == NotaFiscalStatus.Autorizada)
                 return;
@@ -59,22 +60,22 @@ namespace NfcMpvTest.Domain.Entity
 
         public void Cancelar()
         {
-            if (Status == NotaFiscalStatus.Cancelada)
-                throw new EntityValidationException("Nota Fiscal cancelada não pode ser autorizada.");
+            if (Status == NotaFiscalStatus.Rejeitada)
+                throw new EntityValidationException("Nota Fiscal rejeitada não pode ser autorizada.");
 
-            if (Status == NotaFiscalStatus.Emitida || Status == NotaFiscalStatus.Autorizada)
-                Status = NotaFiscalStatus.Cancelada;
-            else
-                throw new InvalidOperationException("Somente notas emitidas ou autorizadas podem ser canceladas.");
+            if (Status == NotaFiscalStatus.Cancelada)
+                return;
 
             Status = NotaFiscalStatus.Cancelada;
+
             Validate();
         }
 
         public void Rejeitar()
         {
-            if (Status == NotaFiscalStatus.Cancelada)
-                throw new InvalidOperationException("Nota fiscal cancelada não pode ser rejeitada.");
+            if (Status == NotaFiscalStatus.Cancelada ||
+                Status == NotaFiscalStatus.Autorizada)
+                throw new EntityValidationException("Nota fiscal não pode ser rejeitada.");
 
             if (Status == NotaFiscalStatus.Rejeitada)
                 return;
@@ -85,8 +86,8 @@ namespace NfcMpvTest.Domain.Entity
 
         public void DefinirErro()
         {
-            if (Status == NotaFiscalStatus.Autorizada || Status == NotaFiscalStatus.Cancelada)
-                throw new InvalidOperationException("Não é possível definir erro em notas finalizadas.");
+            if (Status != NotaFiscalStatus.EmProcessamento)
+                throw new EntityValidationException("Não e possivel Definir Erro apenas para notas ficais em processamento.");
 
             Status = NotaFiscalStatus.Erro;
 
@@ -95,8 +96,11 @@ namespace NfcMpvTest.Domain.Entity
 
         public void ColocarEmProcessamento()
         {
-            if (Status != NotaFiscalStatus.Emitida)
-                throw new InvalidOperationException("Somente notas emitidas podem ser enviadas para processamento.");
+            if ((Status != NotaFiscalStatus.Emitida) && (Status != NotaFiscalStatus.Erro))
+                throw new EntityValidationException("Nota fiscal não pode ser colocada em processamento.");
+
+            if (Status == NotaFiscalStatus.EmProcessamento)
+                return;
 
             Status = NotaFiscalStatus.EmProcessamento;
             Validate();
