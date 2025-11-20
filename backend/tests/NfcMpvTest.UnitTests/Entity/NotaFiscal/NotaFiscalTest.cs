@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using NfcMpvTest.Domain.Entity;
 using NfcMpvTest.Domain.Enum;
 using NfcMpvTest.Domain.Exceptions;
 using Entity = NfcMpvTest.Domain.Entity;
@@ -29,9 +30,12 @@ namespace NfcMpvTest.UnitTests.Entity.NotaFiscal
             notaFiscal.Status.Should().Be(Domain.Enum.NotaFiscalStatus.Emitida);
         }
 
-        [Fact(DisplayName = nameof(Deve_Criar_Nota_Fiscal_ComItens_Corretamente))]
+        [Theory(DisplayName = nameof(Deve_Criar_Nota_Fiscal_ComItens_Corretamente_StatusDaNotaFiscal_Validos))]
         [Trait("Domain", "NotaFiscal - Entity")]
-        public void Deve_Criar_Nota_Fiscal_ComItens_Corretamente()
+        [InlineData(NotaFiscalStatus.Emitida)]
+        [InlineData(NotaFiscalStatus.EmProcessamento)]
+        [InlineData(NotaFiscalStatus.Erro)]
+        public void Deve_Criar_Nota_Fiscal_ComItens_Corretamente_StatusDaNotaFiscal_Validos(NotaFiscalStatus status)
         {
             var emissor = _fixture.RetornaEmissorValido();
             var dataEmissao = _fixture.RetornaDataEmissaoValida();
@@ -40,6 +44,8 @@ namespace NfcMpvTest.UnitTests.Entity.NotaFiscal
 
             var itens = _fixture.RetornaListaItensValida(notaFiscal.Id, 10);
 
+            _fixture.DefinirStatusNotaFiscal(notaFiscal, status);
+
             foreach (var item in itens)
                 notaFiscal.AdicionarItem(item);
 
@@ -47,7 +53,7 @@ namespace NfcMpvTest.UnitTests.Entity.NotaFiscal
             notaFiscal.DataEmissao.Should().Be(dataEmissao);
             notaFiscal.Items.Should().NotBeEmpty();
             notaFiscal.ValoTotal.Should().NotBe(0);
-            notaFiscal.Status.Should().Be(Domain.Enum.NotaFiscalStatus.Emitida);
+            notaFiscal.Status.Should().Be(status);
         }
 
 
@@ -83,9 +89,12 @@ namespace NfcMpvTest.UnitTests.Entity.NotaFiscal
             notaFiscal.Status.Should().Be(Domain.Enum.NotaFiscalStatus.Emitida);
         }
 
-        [Fact(DisplayName = nameof(Deve_Atualizar_Emissor_Corretamente))]
+        [Theory(DisplayName = nameof(Deve_Atualizar_Emissor_Corretamente_ComStatusNotaFiscal_Validos))]
         [Trait("Domain", "NotaFiscal - Entity")]
-        public void Deve_Atualizar_Emissor_Corretamente()
+        [InlineData(NotaFiscalStatus.Emitida)]
+        [InlineData(NotaFiscalStatus.EmProcessamento)]
+        [InlineData(NotaFiscalStatus.Erro)]
+        public void Deve_Atualizar_Emissor_Corretamente_ComStatusNotaFiscal_Validos(NotaFiscalStatus status)
         {
             var notaFiscal = new Domain.Entity.NotaFiscal(
             _fixture.RetornaEmissorValido(),
@@ -93,75 +102,46 @@ namespace NfcMpvTest.UnitTests.Entity.NotaFiscal
 
             var novoEmissor = _fixture.RetornaEmissorValido();
 
+            _fixture.DefinirStatusNotaFiscal(notaFiscal, status);
+
             notaFiscal.Atualizar(novoEmissor);
 
             notaFiscal.Emissor.Should().Be(novoEmissor);
             notaFiscal.DataEmissao.Should().Be(notaFiscal.DataEmissao);
             notaFiscal.ValoTotal.Should().Be(0);
-            notaFiscal.Status.Should().Be(Domain.Enum.NotaFiscalStatus.Emitida);
+            notaFiscal.Status.Should().Be(status);
         }
 
 
-        [Fact(DisplayName = nameof(Deve_Atualizar_DataEmissao_Corretamente_Com_StatusEmitida))]
+        [Theory(DisplayName = nameof(Deve_Atualizar_DataEmissao_Corretamente_Com_StatusValidos))]
         [Trait("Domain", "NotaFiscal - Entity")]
-        public void Deve_Atualizar_DataEmissao_Corretamente_Com_StatusEmitida()
+        [InlineData(NotaFiscalStatus.Emitida)]
+        [InlineData(NotaFiscalStatus.EmProcessamento)]
+        [InlineData(NotaFiscalStatus.Erro)]
+        public void Deve_Atualizar_DataEmissao_Corretamente_Com_StatusValidos(NotaFiscalStatus status)
         {
             var notaFiscal = new Domain.Entity.NotaFiscal(
             _fixture.RetornaEmissorValido(),
             _fixture.RetornaDataEmissaoValida());
 
             var novaDataEmissao = _fixture.RetornaDataEmissaoValida();
+            _fixture.DefinirStatusNotaFiscal(notaFiscal, status);
 
             notaFiscal.Atualizar(dataEmissao: novaDataEmissao);
 
             notaFiscal.Emissor.Should().Be(notaFiscal.Emissor);
             notaFiscal.DataEmissao.Should().Be(novaDataEmissao);
             notaFiscal.ValoTotal.Should().Be(0);
-            notaFiscal.Status.Should().Be(Domain.Enum.NotaFiscalStatus.Emitida);
-        }
-
-        [Fact(DisplayName = nameof(Deve_Atualizar_DataEmissao_Corretamente_Com_EmProcessamento))]
-        [Trait("Domain", "NotaFiscal - Entity")]
-        public void Deve_Atualizar_DataEmissao_Corretamente_Com_EmProcessamento()
-        {
-            var notaFiscal = new Domain.Entity.NotaFiscal(
-            _fixture.RetornaEmissorValido(),
-            _fixture.RetornaDataEmissaoValida());
-
-            var novaDataEmissao = _fixture.RetornaDataEmissaoValida();
-            notaFiscal.ColocarEmProcessamento();
-
-            notaFiscal.Atualizar(dataEmissao: novaDataEmissao);
-
-            notaFiscal.Emissor.Should().Be(notaFiscal.Emissor);
-            notaFiscal.DataEmissao.Should().Be(novaDataEmissao);
-            notaFiscal.ValoTotal.Should().Be(0);
-            notaFiscal.Status.Should().Be(Domain.Enum.NotaFiscalStatus.EmProcessamento);
-        }
-
-        [Fact(DisplayName = nameof(Deve_Atualizar_DataEmissao_Corretamente_Com_StatusErro))]
-        [Trait("Domain", "NotaFiscal - Entity")]
-        public void Deve_Atualizar_DataEmissao_Corretamente_Com_StatusErro()
-        {
-            var notaFiscal = new Domain.Entity.NotaFiscal(
-            _fixture.RetornaEmissorValido(),
-            _fixture.RetornaDataEmissaoValida());
-
-            var novaDataEmissao = _fixture.RetornaDataEmissaoValida();
-            notaFiscal.DefinirErro();
-
-            notaFiscal.Atualizar(dataEmissao: novaDataEmissao);
-
-            notaFiscal.Emissor.Should().Be(notaFiscal.Emissor);
-            notaFiscal.DataEmissao.Should().Be(novaDataEmissao);
-            notaFiscal.ValoTotal.Should().Be(0);
-            notaFiscal.Status.Should().Be(Domain.Enum.NotaFiscalStatus.Erro);
+            notaFiscal.Status.Should().Be(status);
         }
 
 
-        [Fact(DisplayName = nameof(Deve_Remover_Item_Corretamente_Com_Status_EmProcessamento))]
+        [Theory(DisplayName = nameof(Deve_Remover_Item_Corretamente_Com_Status_Validos))]
         [Trait("Domain", "NotaFiscal - Entity")]
-        public void Deve_Remover_Item_Corretamente_Com_Status_EmProcessamento()
+        [InlineData(NotaFiscalStatus.Emitida)]
+        [InlineData(NotaFiscalStatus.EmProcessamento)]
+        [InlineData(NotaFiscalStatus.Erro)]
+        public void Deve_Remover_Item_Corretamente_Com_Status_Validos(NotaFiscalStatus status)
         {
             var notaFiscal = new Domain.Entity.NotaFiscal(
                 _fixture.RetornaEmissorValido(),
@@ -186,84 +166,23 @@ namespace NfcMpvTest.UnitTests.Entity.NotaFiscal
             notaFiscal.AdicionarItem(item2);
             notaFiscal.RemoverItem(item1);
 
-            notaFiscal.ColocarEmProcessamento();
+            _fixture.DefinirStatusNotaFiscal(notaFiscal, status);
+
             notaFiscal.Items.Should().HaveCount(1);
 
             notaFiscal.ValoTotal.Should().Be(145.02m);
 
-            notaFiscal.Status.Should().Be(Domain.Enum.NotaFiscalStatus.EmProcessamento);
+            notaFiscal.Status.Should().Be(status);
         }
 
 
-        [Fact(DisplayName = nameof(Deve_Remover_TodosItens_Corretamente_Status_Emitida))]
-        [Trait("Domain", "NotaFiscal - Entity")]
-        public void Deve_Remover_TodosItens_Corretamente_Status_Emitida()
-        {
-            var notaFiscal = new Domain.Entity.NotaFiscal(
-                _fixture.RetornaEmissorValido(),
-               _fixture.RetornaDataEmissaoValida()
-           );
 
-            var itens = _fixture.RetornaListaItensValida(notaFiscal.Id, 5);
-            foreach (var item in itens)
-                notaFiscal.AdicionarItem(item);
-
-            notaFiscal.RemoverTodosItens();
-            notaFiscal.Items.Should().HaveCount(0);
-            notaFiscal.ValoTotal.Should().Be(0);
-            notaFiscal.Status.Should().Be(Domain.Enum.NotaFiscalStatus.Emitida);
-        }
-
-        [Fact(DisplayName = nameof(Deve_Remover_TodosItens_Corretamente_Status_EmProcessamento))]
-        [Trait("Domain", "NotaFiscal - Entity")]
-        public void Deve_Remover_TodosItens_Corretamente_Status_EmProcessamento()
-        {
-            var notaFiscal = new Domain.Entity.NotaFiscal(
-                _fixture.RetornaEmissorValido(),
-               _fixture.RetornaDataEmissaoValida()
-           );
-
-            var itens = _fixture.RetornaListaItensValida(notaFiscal.Id, 5);
-            foreach (var item in itens)
-                notaFiscal.AdicionarItem(item);
-
-            notaFiscal.ColocarEmProcessamento();
-
-            notaFiscal.RemoverTodosItens();
-
-            notaFiscal.Items.Should().HaveCount(0);
-            notaFiscal.ValoTotal.Should().Be(0);
-            notaFiscal.Status.Should().Be(Domain.Enum.NotaFiscalStatus.EmProcessamento);
-        }
-
-        [Fact(DisplayName = nameof(Deve_Remover_TodosItens_Corretamente_Status_Erro))]
-        [Trait("Domain", "NotaFiscal - Entity")]
-        public void Deve_Remover_TodosItens_Corretamente_Status_Erro()
-        {
-            var notaFiscal = new Domain.Entity.NotaFiscal(
-                _fixture.RetornaEmissorValido(),
-               _fixture.RetornaDataEmissaoValida()
-           );
-
-            var itens = _fixture.RetornaListaItensValida(notaFiscal.Id, 5);
-            foreach (var item in itens)
-                notaFiscal.AdicionarItem(item);
-
-            notaFiscal.DefinirErro();
-
-            notaFiscal.RemoverTodosItens();
-
-            notaFiscal.Items.Should().HaveCount(0);
-            notaFiscal.ValoTotal.Should().Be(0);
-            notaFiscal.Status.Should().Be(Domain.Enum.NotaFiscalStatus.Erro);
-        }
-
-        [Theory(DisplayName = nameof(Deve_Retornar_Erro_AoRemover_TodosItens_Corretamente_Status_Invalidos))]
+        [Theory(DisplayName = nameof(Deve_Retornar_Erro_AoRemover_UmItem_Status_Invalidos))]
         [Trait("Domain", "NotaFiscal - Entity")]
         [InlineData(NotaFiscalStatus.Cancelada)]
         [InlineData(NotaFiscalStatus.Rejeitada)]
         [InlineData(NotaFiscalStatus.Autorizada)]
-        public void Deve_Retornar_Erro_AoRemover_TodosItens_Corretamente_Status_Invalidos(NotaFiscalStatus notaFiscalStatus)
+        public void Deve_Retornar_Erro_AoRemover_UmItem_Status_Invalidos(NotaFiscalStatus notaFiscalStatus)
         {
             var notaFicalValida = new Domain.Entity.NotaFiscal(
                 _fixture.RetornaEmissorValido(),
@@ -273,18 +192,55 @@ namespace NfcMpvTest.UnitTests.Entity.NotaFiscal
             var novoEmissor = _fixture.RetornaEmissorValido();
             var novaDataEmissao = _fixture.RetornaDataEmissaoValida();
 
-            switch (notaFiscalStatus)
-            {
-                case NotaFiscalStatus.Cancelada:
-                    notaFicalValida.Cancelar();
-                    break;
-                case NotaFiscalStatus.Rejeitada:
-                    notaFicalValida.Rejeitar();
-                    break;
-                case NotaFiscalStatus.Autorizada:
-                    notaFicalValida.Autorizar();
-                    break;
-            }
+            _fixture.DefinirStatusNotaFiscal(notaFicalValida, notaFiscalStatus);
+
+            Action action = () => notaFicalValida.RemoverTodosItens();
+
+            action.Should().Throw<EntityValidationException>()
+                .WithMessage("Nota Fiscal não pode ser alterada");
+        }
+
+        [Theory(DisplayName = nameof(Deve_Remover_TodosItens_Corretamente_Status_Validos))]
+        [Trait("Domain", "NotaFiscal - Entity")]
+        [InlineData(NotaFiscalStatus.Emitida)]
+        [InlineData(NotaFiscalStatus.EmProcessamento)]
+        [InlineData(NotaFiscalStatus.Erro)]
+        public void Deve_Remover_TodosItens_Corretamente_Status_Validos(NotaFiscalStatus status)
+        {
+            var notaFiscal = new Domain.Entity.NotaFiscal(
+                _fixture.RetornaEmissorValido(),
+               _fixture.RetornaDataEmissaoValida()
+           );
+
+            var itens = _fixture.RetornaListaItensValida(notaFiscal.Id, 5);
+            foreach (var item in itens)
+                notaFiscal.AdicionarItem(item);
+
+            _fixture.DefinirStatusNotaFiscal(notaFiscal, status);
+
+            notaFiscal.RemoverTodosItens();
+            notaFiscal.Items.Should().HaveCount(0);
+            notaFiscal.ValoTotal.Should().Be(0);
+            notaFiscal.Status.Should().Be(status);
+        }
+
+
+        [Theory(DisplayName = nameof(Deve_Retornar_Erro_AoRemover_TodosItens_Status_Invalidos))]
+        [Trait("Domain", "NotaFiscal - Entity")]
+        [InlineData(NotaFiscalStatus.Cancelada)]
+        [InlineData(NotaFiscalStatus.Rejeitada)]
+        [InlineData(NotaFiscalStatus.Autorizada)]
+        public void Deve_Retornar_Erro_AoRemover_TodosItens_Status_Invalidos(NotaFiscalStatus notaFiscalStatus)
+        {
+            var notaFicalValida = new Domain.Entity.NotaFiscal(
+                _fixture.RetornaEmissorValido(),
+                _fixture.RetornaDataEmissaoValida()
+                );
+
+            var novoEmissor = _fixture.RetornaEmissorValido();
+            var novaDataEmissao = _fixture.RetornaDataEmissaoValida();
+
+            _fixture.DefinirStatusNotaFiscal(notaFicalValida, notaFiscalStatus);
 
             Action action = () => notaFicalValida.RemoverTodosItens();
 
@@ -307,18 +263,7 @@ namespace NfcMpvTest.UnitTests.Entity.NotaFiscal
             var novoEmissor = _fixture.RetornaEmissorValido();
             var novaDataEmissao = _fixture.RetornaDataEmissaoValida();
 
-            switch (notaFiscalStatus)
-            {
-                case NotaFiscalStatus.Cancelada:
-                    notaFicalValida.Cancelar();
-                    break;
-                case NotaFiscalStatus.Rejeitada:
-                    notaFicalValida.Rejeitar();
-                    break;
-                case NotaFiscalStatus.Autorizada:
-                    notaFicalValida.Autorizar();
-                    break;
-            }
+            _fixture.DefinirStatusNotaFiscal(notaFicalValida, notaFiscalStatus);
 
             Action action = () => notaFicalValida.Atualizar(novoEmissor,
                 novaDataEmissao);
@@ -359,5 +304,7 @@ namespace NfcMpvTest.UnitTests.Entity.NotaFiscal
                 .WithMessage("DataEmissao should not be null");
 
         }
+
+
     }
 }

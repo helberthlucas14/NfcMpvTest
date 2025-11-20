@@ -1,4 +1,5 @@
-﻿using NfcMpvTest.UnitTests.Common;
+﻿using NfcMpvTest.Domain.Enum;
+using NfcMpvTest.UnitTests.Common;
 
 namespace NfcMpvTest.UnitTests.Entity.NotaFiscal
 {
@@ -15,6 +16,31 @@ namespace NfcMpvTest.UnitTests.Entity.NotaFiscal
                 emissorValido = emissorValido[..150];
 
             return emissorValido;
+        }
+
+        public void DefinirStatusNotaFiscal(NfcMpvTest.Domain.Entity.NotaFiscal notaFiscal,
+            NfcMpvTest.Domain.Enum.NotaFiscalStatus status)
+        {
+            switch (status)
+            {
+                case NotaFiscalStatus.Autorizada:
+                    notaFiscal.Autorizar();
+                    break;
+                case NotaFiscalStatus.Cancelada:
+                    notaFiscal.Cancelar();
+                    break;
+                case NotaFiscalStatus.Rejeitada:
+                    notaFiscal.Rejeitar();
+                    break;
+                case NotaFiscalStatus.EmProcessamento:
+                    notaFiscal.ColocarEmProcessamento();
+                    break;
+                case NotaFiscalStatus.Erro:
+                    notaFiscal.DefinirErro();
+                    break;
+                default:
+                    break;
+            }
         }
 
         public DateTime RetornaDataEmissaoValida()
