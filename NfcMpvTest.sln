@@ -1,0 +1,82 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36623.8
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backend", "backend", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "frontend", "frontend", "{32CBB0CE-D156-40C5-A9C2-951D55F4EDCF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "db", "db", "{5C88C84E-5F1A-4424-A97C-DE9B3D347AF3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D38A7D4B-B1DC-4644-B0A6-0625E4239275}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NfcMpvTest.Api", "backend\src\NfcMpvTest.Api\NfcMpvTest.Api.csproj", "{67C2F1DC-DAD7-4E34-AEAF-474CA2E02D78}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NfcMpvTest.Application", "backend\src\NfcMpvTest.Application\NfcMpvTest.Application.csproj", "{059507F2-F81B-4A94-A180-6A0726C8A30E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NfcMpvTest.Domain", "backend\src\NfcMpvTest.Domain\NfcMpvTest.Domain.csproj", "{F85A03F7-21D7-4ACC-B2BF-8D697202D132}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NfcMpvTest.Infra.CrossCuttingCommons", "backend\src\NfcMpvTest.Infra.CrossCuttingCommons\NfcMpvTest.Infra.CrossCuttingCommons.csproj", "{AEB81E2D-AB17-453E-9A4E-897DBE847F5B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NfcMpvTest.Infra.InfraData.EF", "backend\src\NfcMpvTest.Infra.InfraData.EF\NfcMpvTest.Infra.InfraData.EF.csproj", "{B3F75874-D1AC-467D-BC51-07AF5B9CA189}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{811AF729-B3F3-4B7E-9478-2BC7A3F315A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NfcMpvTest.UnitTests", "backend\tests\NfcMpvTest.UnitTests\NfcMpvTest.UnitTests.csproj", "{D45076E6-EF3E-4EB9-A4E2-C80256ABE260}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NfcMpvTest.IntegrationTests", "backend\tests\NfcMpvTest.IntegrationTests\NfcMpvTest.IntegrationTests.csproj", "{970038B4-2968-4361-9478-F2541D3A18EA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{67C2F1DC-DAD7-4E34-AEAF-474CA2E02D78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67C2F1DC-DAD7-4E34-AEAF-474CA2E02D78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67C2F1DC-DAD7-4E34-AEAF-474CA2E02D78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67C2F1DC-DAD7-4E34-AEAF-474CA2E02D78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{059507F2-F81B-4A94-A180-6A0726C8A30E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{059507F2-F81B-4A94-A180-6A0726C8A30E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{059507F2-F81B-4A94-A180-6A0726C8A30E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{059507F2-F81B-4A94-A180-6A0726C8A30E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F85A03F7-21D7-4ACC-B2BF-8D697202D132}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F85A03F7-21D7-4ACC-B2BF-8D697202D132}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F85A03F7-21D7-4ACC-B2BF-8D697202D132}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F85A03F7-21D7-4ACC-B2BF-8D697202D132}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEB81E2D-AB17-453E-9A4E-897DBE847F5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEB81E2D-AB17-453E-9A4E-897DBE847F5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEB81E2D-AB17-453E-9A4E-897DBE847F5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEB81E2D-AB17-453E-9A4E-897DBE847F5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3F75874-D1AC-467D-BC51-07AF5B9CA189}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3F75874-D1AC-467D-BC51-07AF5B9CA189}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3F75874-D1AC-467D-BC51-07AF5B9CA189}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3F75874-D1AC-467D-BC51-07AF5B9CA189}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D45076E6-EF3E-4EB9-A4E2-C80256ABE260}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D45076E6-EF3E-4EB9-A4E2-C80256ABE260}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D45076E6-EF3E-4EB9-A4E2-C80256ABE260}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D45076E6-EF3E-4EB9-A4E2-C80256ABE260}.Release|Any CPU.Build.0 = Release|Any CPU
+		{970038B4-2968-4361-9478-F2541D3A18EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{970038B4-2968-4361-9478-F2541D3A18EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{970038B4-2968-4361-9478-F2541D3A18EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{970038B4-2968-4361-9478-F2541D3A18EA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D38A7D4B-B1DC-4644-B0A6-0625E4239275} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{67C2F1DC-DAD7-4E34-AEAF-474CA2E02D78} = {D38A7D4B-B1DC-4644-B0A6-0625E4239275}
+		{059507F2-F81B-4A94-A180-6A0726C8A30E} = {D38A7D4B-B1DC-4644-B0A6-0625E4239275}
+		{F85A03F7-21D7-4ACC-B2BF-8D697202D132} = {D38A7D4B-B1DC-4644-B0A6-0625E4239275}
+		{AEB81E2D-AB17-453E-9A4E-897DBE847F5B} = {D38A7D4B-B1DC-4644-B0A6-0625E4239275}
+		{B3F75874-D1AC-467D-BC51-07AF5B9CA189} = {D38A7D4B-B1DC-4644-B0A6-0625E4239275}
+		{811AF729-B3F3-4B7E-9478-2BC7A3F315A4} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{D45076E6-EF3E-4EB9-A4E2-C80256ABE260} = {811AF729-B3F3-4B7E-9478-2BC7A3F315A4}
+		{970038B4-2968-4361-9478-F2541D3A18EA} = {811AF729-B3F3-4B7E-9478-2BC7A3F315A4}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {565146FC-8F25-4197-A6D1-7E7EF39CB9A3}
+	EndGlobalSection
+EndGlobal
