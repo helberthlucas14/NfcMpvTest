@@ -2,10 +2,10 @@
 {
     public class Item : Entity
     {
-        public Guid NotaFiscalId { get; set; }
-        public string Descricao { get; set; }
-        public decimal Valor { get; set; }
-        public Guid ProdutoCodigo { get; set; }
+        public Guid NotaFiscalId { get; private set; }
+        public string Descricao { get; private set; }
+        public decimal Valor { get; private set; }
+        public Guid ProdutoCodigo { get; private set; }
 
         public Item(Guid notaFiscalId, string descricao, decimal valor, Guid produtoCodigo)
         {
