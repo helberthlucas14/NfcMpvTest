@@ -5,7 +5,6 @@ namespace NfcMpvTest.UnitTests.Entity.Item
 {
     public class ItemTestFixture : BaseFixture
     {
-
         public string RetonraDescricaoValido()
         {
             var descricaoValida = "";
@@ -15,7 +14,6 @@ namespace NfcMpvTest.UnitTests.Entity.Item
                 descricaoValida = descricaoValida[..255];
             return descricaoValida;
         }
-
 
         public decimal RetornaValorValido()
         {

@@ -1,5 +1,6 @@
 ﻿using NfcMpvTest.Domain.Enum;
 using NfcMpvTest.Domain.Exceptions;
+using NfcMpvTest.Domain.Validation;
 
 namespace NfcMpvTest.Domain.Entity
 {
@@ -122,6 +123,8 @@ namespace NfcMpvTest.Domain.Entity
             Validation.DomainValidation.MinLength(Emissor, 2, nameof(Emissor));
             Validation.DomainValidation.MaxLength(Emissor, 150, nameof(Emissor));
             Validation.DomainValidation.NotNull(DataEmissao, nameof(DataEmissao));
+            if (DataEmissao > DateTime.Now)
+                throw new EntityValidationException("A data de emissão não pode ser futura.");
         }
 
     }

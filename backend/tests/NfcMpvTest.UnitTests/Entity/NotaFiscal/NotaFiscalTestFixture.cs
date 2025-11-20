@@ -48,6 +48,26 @@ namespace NfcMpvTest.UnitTests.Entity.NotaFiscal
             return Faker.Date.Past();
         }
 
+        public string RetonraDescricaoValido()
+        {
+            var descricaoValida = "";
+            while (descricaoValida.Length < 3)
+                descricaoValida = Faker.Commerce.ProductName();
+            if (descricaoValida.Length > 255)
+                descricaoValida = descricaoValida[..255];
+            return descricaoValida;
+        }
+
+        public decimal RetornaValorValido()
+        {
+            return Faker.Random.Decimal(0, 10000);
+        }
+
+        public Guid RetornaProdutoCodigoValido()
+        {
+            return Guid.NewGuid();
+        }
+
         public List<NfcMpvTest.Domain.Entity.Item> RetornaListaItensValida(Guid notafiscalId, int? tamanho = 1)
         {
             var itens = new List<NfcMpvTest.Domain.Entity.Item>();
@@ -55,9 +75,9 @@ namespace NfcMpvTest.UnitTests.Entity.NotaFiscal
             {
                 var item = new NfcMpvTest.Domain.Entity.Item(
                    notafiscalId,
-                    Faker.Commerce.ProductName(),
-                    Faker.Random.Decimal(1, 1000),
-                    Guid.NewGuid()
+                    RetonraDescricaoValido(),
+                    RetornaValorValido(),
+                    RetornaProdutoCodigoValido()
                 );
                 itens.Add(item);
             }

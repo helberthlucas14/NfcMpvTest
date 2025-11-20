@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\NfcMpvTest.Application\NfcMpvTest.Application.csproj" />
     <ProjectReference Include="..\..\src\NfcMpvTest.Domain\NfcMpvTest.Domain.csproj" />
     <ProjectReference Include="..\..\src\NfcMpvTest.Infra.CrossCuttingCommons\NfcMpvTest.Infra.CrossCuttingCommons.csproj" />
   </ItemGroup>
